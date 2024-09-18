@@ -9,7 +9,7 @@ import {
   SystemProgram,
   Transaction,
   TransactionInstruction,
-  TransactionResponse,
+  VersionedTransactionResponse,
 } from '@solana/web3.js';
 import { encode } from 'bs58';
 
@@ -85,12 +85,11 @@ export const makeTransaction = async (
     toPubkey,
   });
 
-  const { blockhash } = await connection.getLatestBlockhash();
-  const tx = new Transaction({
-    recentBlockhash: blockhash,
+  const blockhashWithExpiryBlockHeight = await connection.getLatestBlockhash();
+  return new Transaction({
     feePayer: fromPubkey,
+    ...blockhashWithExpiryBlockHeight,
   }).add(instruction);
-  return tx;
 };
 
 const findBlock = async (
@@ -98,7 +97,7 @@ const findBlock = async (
   blockhash: string
 ): Promise<void> =>
   connection
-    .getFeeCalculatorForBlockhash(blockhash, 'confirmed')
+    .isBlockhashValid(blockhash, { commitment: 'confirmed' })
     .then(result => {
       if (!result.value) throw new Error('Block was not found');
       // if we were interested in the age of the block,
@@ -117,12 +116,15 @@ export const checkRecentBlock = async (
 const findTransaction = async (
   connection: Connection,
   transaction: Transaction
-): Promise<TransactionResponse | null> => {
+): Promise<VersionedTransactionResponse | null> => {
   if (!transaction.signature) {
     throw new Error('Transaction has no signature');
   }
   const txSig = encode(transaction.signature);
-  return connection.getTransaction(txSig);
+  return connection.getTransaction(txSig, {
+    commitment: 'confirmed',
+    maxSupportedTransactionVersion: 0,
+  });
 };
 
 export const checkTransactionNotBroadcast = async (
