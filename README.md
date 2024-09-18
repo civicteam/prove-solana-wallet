@@ -9,13 +9,13 @@ and can be extended to others.
 ## Install
 
 ```sh
-npm install @identity.com/prove-solana-wallet
+npm install @civic/prove-solana-wallet
 ```
 
 or 
 
 ```sh
-yarn add @identity.com/prove-solana-wallet
+yarn add @civic/prove-solana-wallet
 ```
 
 ## Usage
@@ -24,14 +24,14 @@ yarn add @identity.com/prove-solana-wallet
 
 prover side: 
 ```js
-const {create} = require('@identity.com/prove-solana-wallet');
+const {create} = require('@civic/prove-solana-wallet');
 const nonce = `${new Date().getTime()}`;
 const proof = await create(myKeypair, nonce);
 ```
 
 Verifier side:
 ```js
-const {verify} = require('@identity.com/prove-solana-wallet');
+const {verify} = require('@civic/prove-solana-wallet');
 const message = timestamp;
 verify(expectedPublicKey, proof, message);
 ```
@@ -40,13 +40,13 @@ verify(expectedPublicKey, proof, message);
 
 prover side: 
 ```js
-const {proveTransaction} = require('@identity.com/prove-solana-wallet');
+const {proveTransaction} = require('@civic/prove-solana-wallet');
 const proof = await proveTransaction(myKeypair);
 ```
 
 Verifier side:
 ```js
-const {verifyTransaction} = require('@identity.com/prove-solana-wallet');
+const {verifyTransaction} = require('@civic/prove-solana-wallet');
 await verifyTransaction(proof, expectedPublicKey);
 ```
 
@@ -55,7 +55,7 @@ See [here](https://github.com/project-serum/sol-wallet-adapter) for more details
 
 prover side:
 ```js
-const {proveTransaction} = require('@identity.com/prove-solana-wallet');
+const {proveTransaction} = require('@civic/prove-solana-wallet');
 import Wallet from "@project-serum/sol-wallet-adapter";
 
 const providerUrl = 'https://www.sollet.io';
@@ -70,7 +70,7 @@ wallet.on('connect', async (publicKey) => {
 
 Verifier side:
 ```js
-const {verifyTransaction} = require('@identity.com/prove-solana-wallet');
+const {verifyTransaction} = require('@civic/prove-solana-wallet');
 await verifyTransaction(proof, expectedPublicKey);
 ```
 
